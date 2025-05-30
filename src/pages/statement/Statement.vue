@@ -27,68 +27,61 @@
       <v-progress-circular indeterminate color="#0d6abf" size="40" width="4" />
     </div>
     <div v-else>
-      <table class="statement-table">
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Tipo</th>
-            <th>Valor (R$)</th>
-            <th>Origem</th>
-            <th>Destino</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="tx in transactions" :key="tx.id">
-            <td>
-              {{
-                tx.created_at ? new Date(tx.created_at).toLocaleString() : '-'
-              }}
-            </td>
-            <td>{{ tx.transfer_type_text || '-' }}</td>
-            <td>
-              {{
-                tx.amount_to_transfer != null
-                  ? tx.amount_to_transfer.toFixed(2)
-                  : '-'
-              }}
-            </td>
-            <td>
-              <div v-if="tx.from_user_bank_account">
-                {{ tx.from_user_bank_account.bank_name }}<br />
-                {{ tx.from_user_bank_account.account_number }}-{{
-                  tx.from_user_bank_account.account_digit
+      <div style="position: relative">
+        <table class="statement-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Tipo</th>
+              <th>Valor (R$)</th>
+              <th>Origem</th>
+              <th>Destino</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="tx in transactions" :key="tx.id">
+              <td>
+                {{
+                  tx.created_at ? new Date(tx.created_at).toLocaleString() : '-'
                 }}
-              </div>
-              <div v-else>-</div>
-            </td>
-            <td>
-              <div v-if="tx.to_bank_account">
-                {{ tx.to_bank_account.bank_name }}<br />
-                {{ tx.to_bank_account.account_number }}-{{
-                  tx.to_bank_account.account_digit
+              </td>
+              <td>{{ tx.transfer_type_text || '-' }}</td>
+              <td>
+                {{
+                  tx.amount_to_transfer != null
+                    ? tx.amount_to_transfer.toFixed(2)
+                    : '-'
                 }}
-              </div>
-              <div v-else>-</div>
-            </td>
-            <td>
-              <span :style="{ color: tx.was_success ? '#388e3c' : '#b71c1c' }">
-                {{ tx.was_success ? 'Sucesso' : 'Falha' }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-if="loading" class="table-loading-overlay">
-        <v-progress-circular
-          indeterminate
-          color="#0d6abf"
-          size="40"
-          width="4"
-        />
-      </div>
-      <div v-else-if="transactions.length === 0">
-        Nenhuma transação encontrada.
+              </td>
+              <td>
+                <div v-if="tx.from_user_bank_account">
+                  {{ tx.from_user_bank_account.bank_name }}<br />
+                  {{ tx.from_user_bank_account.account_number }}-{{
+                    tx.from_user_bank_account.account_digit
+                  }}
+                </div>
+                <div v-else>-</div>
+              </td>
+              <td>
+                <div v-if="tx.to_bank_account">
+                  {{ tx.to_bank_account.bank_name }}<br />
+                  {{ tx.to_bank_account.account_number }}-{{
+                    tx.to_bank_account.account_digit
+                  }}
+                </div>
+                <div v-else>-</div>
+              </td>
+              <td>
+                <span
+                  :style="{ color: tx.was_success ? '#388e3c' : '#b71c1c' }"
+                >
+                  {{ tx.was_success ? 'Sucesso' : 'Falha' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div class="pagination">
         <button @click="prevPage" :disabled="page === 1">Anterior</button>
