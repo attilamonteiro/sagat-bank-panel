@@ -23,7 +23,9 @@
         <input type="number" v-model.number="perPage" min="1" max="100" />
       </label>
     </form>
-    <div v-if="loading">Carregando...</div>
+    <div v-if="loading" class="table-loading-overlay">
+      <v-progress-circular indeterminate color="#0d6abf" size="40" width="4" />
+    </div>
     <div v-else>
       <table class="statement-table">
         <thead>
@@ -77,7 +79,17 @@
           </tr>
         </tbody>
       </table>
-      <div v-if="transactions.length === 0">Nenhuma transação encontrada.</div>
+      <div v-if="loading" class="table-loading-overlay">
+        <v-progress-circular
+          indeterminate
+          color="#0d6abf"
+          size="40"
+          width="4"
+        />
+      </div>
+      <div v-else-if="transactions.length === 0">
+        Nenhuma transação encontrada.
+      </div>
       <div class="pagination">
         <button @click="prevPage" :disabled="page === 1">Anterior</button>
         <span>Página {{ currentPage }} de {{ totalPages }}</span>
@@ -94,6 +106,14 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
+
+function useDebouncedWatch(sources: any[], callback: () => void, delay = 400) {
+  let timeout: ReturnType<typeof setTimeout>;
+  watch(sources, () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(callback, delay);
+  });
+}
 
 const authStore = useAuthStore();
 const transactionStore = useTransactionStore();
@@ -136,7 +156,7 @@ async function fetchTransactions(customPage?: number) {
 }
 
 onMounted(() => fetchTransactions());
-watch([dateStart, dateEnd, minValue, maxValue, perPage], () => {
+useDebouncedWatch([dateStart, dateEnd, minValue, maxValue, perPage], () => {
   fetchTransactions(1);
 });
 
@@ -214,5 +234,21 @@ button:disabled {
   color: #b71c1c;
   font-weight: bold;
   margin-top: 1rem;
+}
+input[type='number'],
+input[type='date'] {
+  color: #222 !important;
+  background: #fff !important;
+  border: 1px solid #ccc !important;
+  box-shadow: none !important;
+}
+input[type='number']:focus,
+input[type='date']:focus {
+  border: 1.5px solid #0d6abf !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px #0d6abf22;
+}
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.2);
 }
 </style>
