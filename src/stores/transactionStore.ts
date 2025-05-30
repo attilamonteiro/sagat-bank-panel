@@ -28,15 +28,18 @@ export const useTransactionStore = defineStore('transaction', () => {
     }
   }
 
-  async function fetchStatement(token: string, filters: {
-    type?: string;
-    dateStart?: string;
-    dateEnd?: string;
-    minValue?: string;
-    maxValue?: string;
-    page?: number;
-    perPage?: number;
-  }) {
+  async function fetchStatement(
+    token: string,
+    filters: {
+      type?: string;
+      dateStart?: string;
+      dateEnd?: string;
+      minValue?: string;
+      maxValue?: string;
+      page?: number;
+      perPage?: number;
+    }
+  ) {
     try {
       let params: string[] = [];
       params.push(`per_page=${filters.perPage || 10}`);
@@ -48,7 +51,9 @@ export const useTransactionStore = defineStore('transaction', () => {
       if (filters.minValue) params.push(`min_value=${filters.minValue}`);
       if (filters.maxValue) params.push(`max_value=${filters.maxValue}`);
       const query = params.join('&');
-      const url = `${import.meta.env.VITE_API_URL}/users/bank_account_transfers/statements?${query}`;
+      const url = `${
+        import.meta.env.VITE_API_URL
+      }/users/bank_account_transfers/statements?${query}`;
       const { data } = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
