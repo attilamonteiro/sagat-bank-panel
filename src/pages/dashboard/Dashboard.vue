@@ -3,7 +3,10 @@
     <h2>Painel da Conta</h2>
     <!-- Navegação removida, agora está apenas no LeftMenu -->
     <div v-if="user">
-      <p><strong>Nome do titular:</strong> {{ user.name }}</p>
+      <p>
+        <strong>Nome do titular:</strong>
+        {{ user.user?.name || user.name || '---' }}
+      </p>
       <template v-if="myAccounts && myAccounts.length > 0">
         <table class="accounts-table">
           <thead>

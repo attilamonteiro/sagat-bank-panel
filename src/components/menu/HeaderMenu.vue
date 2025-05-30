@@ -8,7 +8,7 @@
           alt="Avatar"
           class="header-avatar"
         />
-        <span class="header-username">Usuário</span>
+        <span class="header-username">{{ userName }}</span>
         <button class="header-logout-btn" @click="logout">Logout</button>
       </div>
     </div>
@@ -16,6 +16,21 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
+const userName = computed(() => {
+  // Garante compatibilidade com resposta { user: { name: ... } }
+  if (userStore.user && userStore.user.user && userStore.user.user.name) {
+    return userStore.user.user.name;
+  }
+  if (userStore.user && userStore.user.name) {
+    return userStore.user.name;
+  }
+  return 'Usuário';
+});
+
 function logout() {
   window.location.href = '/login';
 }
