@@ -15,13 +15,12 @@
       </div>
       <div class="form-group">
         <label for="toAccount">Conta de destino</label>
-        <input
-          v-model="toAccount"
-          id="toAccount"
-          type="number"
-          required
-          placeholder="ID da conta de destino"
-        />
+        <select v-model="toAccount" id="toAccount" required>
+          <option value="" disabled>Selecione</option>
+          <option v-for="acc in myAccounts" :key="acc.id" :value="acc.id">
+            {{ acc.bank_name }} - {{ acc.account_number }}-{{ acc.account_digit }}
+          </option>
+        </select>
       </div>
       <div class="form-group">
         <label for="amount">Valor</label>

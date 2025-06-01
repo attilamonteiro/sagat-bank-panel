@@ -12,103 +12,40 @@
         </div>
 
         <!-- Card de Filtros -->
-        <div class="filters-section">
+        <div class="filters-section mb-4">
           <v-card-text class="pt-3 pb-3">
             <v-form @submit.prevent>
               <v-row dense>
-                <!-- Data Início -->
-                <v-col cols="12" sm="3" md="3">
-                  <v-menu
-                    v-model="menuStart"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="250px"
-                    min-width="250px"
-                  >
-                    <template #activator="{ props }">
-                      <v-text-field
-                        v-bind="props"
-                        v-model="dateStart"
-                        label="Data Início"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        dense
-                        outlined
-                        clearable
-                      />
-                    </template>
-                    <v-date-picker
-                      v-model="dateStart"
-                      @update:model-value="menuStart = false"
-                      locale="pt-br"
-                      no-title
-                      scrollable
-                    />
-                  </v-menu>
-                </v-col>
-
-                <!-- Data Fim -->
-                <v-col cols="12" sm="3" md="3">
-                  <v-menu
-                    v-model="menuEnd"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="250px"
-                    min-width="250px"
-                  >
-                    <template #activator="{ props }">
-                      <v-text-field
-                        v-bind="props"
-                        v-model="dateEnd"
-                        label="Data Fim"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        dense
-                        outlined
-                        clearable
-                      />
-                    </template>
-                    <v-date-picker
-                      v-model="dateEnd"
-                      @update:model-value="menuEnd = false"
-                      locale="pt-br"
-                      no-title
-                      scrollable
-                    />
-                  </v-menu>
-                </v-col>
-
-                <!-- Valor Mínimo -->
-                <v-col cols="12" sm="3" md="3">
-                  <v-text-field
-                    v-model="minValue"
-                    label="Valor Mínimo (R$)"
-                    type="text"
-                    dense
-                    outlined
-                    hide-details
-                    :rules="[rulePositive]"
-                    placeholder="0,00"
-                    clearable
-                  />
-                </v-col>
-
-                <!-- Valor Máximo -->
-                <v-col cols="12" sm="3" md="3">
-                  <v-text-field
-                    v-model="maxValue"
-                    label="Valor Máximo (R$)"
-                    type="text"
-                    dense
-                    outlined
-                    hide-details
-                    :rules="[rulePositive]"
-                    placeholder="0,00"
-                    clearable
-                  />
-                </v-col>
+                <FilterField
+                  v-model="dateStart"
+                  label="Data Início"
+                  icon="mdi-calendar"
+                  :menu.sync="menuStart"
+                  type="date"
+                  class="col-xs-12 col-sm-6 col-md-4"
+                />
+                <FilterField
+                  v-model="dateEnd"
+                  label="Data Fim"
+                  icon="mdi-calendar"
+                  :menu.sync="menuEnd"
+                  type="date"
+                  class="col-xs-12 col-sm-6 col-md-4"
+                />
+                <FilterField
+                  v-model="minValue"
+                  label="Valor Mínimo (R$)"
+                  placeholder="0,00"
+                  :rules="[rulePositive]"
+                  class="col-xs-12 col-sm-6 col-md-4"
+                />
+                <FilterField
+                  v-model="maxValue"
+                  label="Valor Máximo (R$)"
+                  placeholder="0,00"
+                  :rules="[rulePositive]"
+                  class="col-xs-12 col-sm-6 col-md-4"
+                />
               </v-row>
             </v-form>
           </v-card-text>
@@ -116,94 +53,56 @@
 
         <!-- Loading Overlay -->
         <v-overlay :value="loading" absolute>
-          <v-progress-circular
-            indeterminate
-            color="primary"
-            size="48"
-            width="4"
-          />
+          <v-progress-circular indeterminate color="primary" size="48" width="4" />
         </v-overlay>
 
-        <!-- Tabela de Transações -->
+        <!-- Tabela de Transações (v-data-table) -->
         <div class="table-section">
-          <v-card-text class="pt-3">
-            <v-simple-table dense class="statement-table">
-              <colgroup>
-                <col style="width: 20%" />
-                <col style="width: 20%" />
-                <col style="width: 20%" />
-                <col style="width: 20%" />
-                <col style="width: 20%" />
-              </colgroup>
-
-                <thead>
-                  <tr>
-                    <th class="text-left">Data</th>
-                    <th class="text-left">Tipo</th>
-                    <th class="text-left">Valor</th>
-                    <th class="text-left">Origem</th>
-                    <th class="text-left">Destino</th>
-                  </tr>
-                </thead>
-              <tbody>
-                <tr v-for="tx in transactions" :key="tx.id">
-                  <td class="col-data">
-                    {{ tx.created_at
-                      ? new Date(tx.created_at).toLocaleDateString('pt-BR')
-                      : '-' }}
-                  </td>
-                  <td class="col-tipo">{{ tx.transfer_type_text || '-' }}</td>
-                  <td class="col-valor">
-                    {{ tx.amount_to_transfer != null
-                      ? tx.amount_to_transfer.toFixed(2)
-                      : '-' }}
-                  </td>
-                  <td class="col-origem">
-                    {{ tx.from_user_bank_account?.bank_name || '-' }}
-                  </td>
-                  <td class="col-destino">
-                    {{ tx.to_bank_account?.bank_name || '-' }}
-                  </td>
-                </tr>
-              </tbody>
-            </v-simple-table>
-          </v-card-text>
-        </div>
-
-        <!-- Paginação -->
-        <v-card-actions class="justify-between pt-3">
-          <v-select
-            v-model="perPage"
-            :items="[1, 5, 10, 100]"
-            label="Itens por página"
+          <v-data-table
             dense
-            outlined
-            hide-details
-            style="max-width: 200px;"
-            @change="fetchTransactions(1)"
-          ></v-select>
-          <div class="pagination-controls">
-            <v-btn
-              color="primary"
-              :disabled="page === 1"
-              @click="prevPage"
-              small
-            >
-              ← Anterior
-            </v-btn>
-            <span class="mx-3 text-subtitle-2">
-              Página {{ currentPage }} de {{ totalPages }}
-            </span>
-            <v-btn
-              color="primary"
-              :disabled="page === totalPages"
-              @click="nextPage"
-              small
-            >
-              Próxima →
-            </v-btn>
-          </div>
-        </v-card-actions>
+            :headers="headers"
+            :items="transactions"
+            :page.sync="page"
+            :items-per-page.sync="perPage"
+            :server-items-length="totalRecords"
+            :loading="loading"
+            class="elevation-1 statement-table"
+            :items-per-page-options="[1, 10, 20, 50]"
+            show-first-last-page
+            footer-props="{ showCurrentPage: true, showFirstLastPage: true }"
+          >
+            <!-- Slot para formatação da data -->
+            <template #item.date="{ item }">
+              {{ item.created_at
+                ? new Date(item.created_at).toLocaleDateString('pt-BR')
+                : '-' }}
+            </template>
+
+            <!-- Slot para formatação do tipo -->
+            <template #item.type="{ item }">
+              {{ item.transfer_type_text || '-' }}
+            </template>
+
+            <!-- Slot para formatação do valor -->
+            <template #item.value="{ item }">
+              <div class="text-right">
+                {{ item.amount_to_transfer != null
+                  ? item.amount_to_transfer.toFixed(2)
+                  : '-' }}
+              </div>
+            </template>
+
+            <!-- Slot para formatação da origem -->
+            <template #item.origem="{ item }">
+              {{ item.from_user_bank_account?.bank_name || '-' }}
+            </template>
+
+            <!-- Slot para formatação do destino -->
+            <template #item.destino="{ item }">
+              {{ item.to_bank_account?.bank_name || '-' }}
+            </template>
+          </v-data-table>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -213,6 +112,7 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
+import FilterField from '@/components/FilterField.vue';
 
 function useDebouncedWatch(sources: any[], callback: () => void, delay = 400) {
   let timeout: ReturnType<typeof setTimeout>;
@@ -240,10 +140,18 @@ const perPage = ref<number>(10);
 const menuStart = ref(false);
 const menuEnd = ref(false);
 
+// Definição CORRETA dos headers para v-data-table
+const headers = [
+  { title: 'Data',    value: 'date',    width: '20%'  },
+  { title: 'Tipo',    value: 'type',    width: '15%'  },
+  { title: 'Valor',   value: 'value',   width: '15%', align: 'end' },
+  { title: 'Origem',  value: 'origem',  width: '25%'  },
+  { title: 'Destino', value: 'destino', width: '25%'  },
+];
+
 // Dados calculados
 const transactions = computed(() => transactionStore.statement);
-const currentPage = computed(() => transactionStore.currentPage);
-const totalPages = computed(() => transactionStore.totalPages);
+const totalRecords = computed(() => transactionStore.totalRecords);
 
 // Regras de validação simples
 const rulePositive = (v: string) => {
@@ -251,8 +159,6 @@ const rulePositive = (v: string) => {
   const num = parseFloat(v.replace(',', '.'));
   return (!isNaN(num) && num >= 0) || 'Valor deve ser ≥ 0';
 };
-const rulePerPage = (v: number | null) =>
-  v === null || (v >= 1 && v <= 100) || 'Entre 1 e 100';
 
 async function fetchTransactions(customPage?: number) {
   if (!authStore.token) return;
@@ -270,7 +176,7 @@ async function fetchTransactions(customPage?: number) {
     if (typeof customPage === 'number') {
       page.value = customPage;
     }
-  } catch (e) {
+  } catch {
     error.value = 'Erro ao buscar extrato';
   } finally {
     loading.value = false;
@@ -279,27 +185,24 @@ async function fetchTransactions(customPage?: number) {
 
 onMounted(() => fetchTransactions());
 useDebouncedWatch(
-  [dateStart, dateEnd, minValue, maxValue, perPage],
+  [dateStart, dateEnd, minValue, maxValue],
   () => {
+    page.value = 1;
     fetchTransactions(1);
-  }
+  },
+  400
 );
 
-function nextPage() {
-  if (page.value < totalPages.value) {
-    fetchTransactions(page.value + 1);
+// Quando o usuário altera a página ou itens por página, busca novamente
+watch([page, perPage], ([newPage, newPerPage], [oldPage, oldPerPage]) => {
+  if (newPage !== oldPage || newPerPage !== oldPerPage) {
+    fetchTransactions(newPage);
   }
-}
-function prevPage() {
-  if (page.value > 1) {
-    fetchTransactions(page.value - 1);
-  }
-}
+});
 </script>
 
 <style scoped>
 /* Ajustes de estilo para colunas mais largas e legíveis */
-
 .statement-table th,
 .statement-table td {
   padding: 0.75rem 1rem;
@@ -311,31 +214,6 @@ function prevPage() {
   border-bottom: 2px solid #e0e0e0;
 }
 
-/* As larguras em % no <colgroup> já equilibram proporcionalmente,
-   mas pode-se ajustar ainda mais individualmente, se necessário: */
-
-.col-data {
-  /* Data - texto curto */
-  min-width: 120px;
-}
-
-.col-tipo {
-  /* Tipo - texto curto */
-  min-width: 100px;
-}
-
-.col-valor {
-  /* Valor - numérico */
-  min-width: 100px;
-  text-align: right;
-}
-
-.col-origem,
-.col-destino {
-  /* Origem e Destino - podem ter texto mais longo */
-  min-width: 180px;
-}
-
 /* Hover para linha */
 .statement-table tbody tr:hover td {
   background-color: #f1f3f5;
@@ -344,10 +222,5 @@ function prevPage() {
 /* Remove padding extra do container Vuetify, se houver */
 .v-application--wrap {
   padding-bottom: 0 !important;
-}
-
-/* Ajuste para aumentar a largura da página em 30% */
-.v-container {
-  max-width: 130%;
 }
 </style>
