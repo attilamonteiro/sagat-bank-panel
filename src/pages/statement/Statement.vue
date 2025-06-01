@@ -16,36 +16,10 @@
           <v-card-text class="pt-3 pb-3">
             <v-form @submit.prevent>
               <v-row dense>
-                <FilterField
-                  v-model="dateStart"
-                  label="Data Início"
-                  icon="mdi-calendar"
-                  :menu.sync="menuStart"
-                  type="date"
-                  class="col-xs-12 col-sm-6 col-md-4"
-                />
-                <FilterField
-                  v-model="dateEnd"
-                  label="Data Fim"
-                  icon="mdi-calendar"
-                  :menu.sync="menuEnd"
-                  type="date"
-                  class="col-xs-12 col-sm-6 col-md-4"
-                />
-                <FilterField
-                  v-model="minValue"
-                  label="Valor Mínimo (R$)"
-                  placeholder="0,00"
-                  :rules="[rulePositive]"
-                  class="col-xs-12 col-sm-6 col-md-4"
-                />
-                <FilterField
-                  v-model="maxValue"
-                  label="Valor Máximo (R$)"
-                  placeholder="0,00"
-                  :rules="[rulePositive]"
-                  class="col-xs-12 col-sm-6 col-md-4"
-                />
+                <DateFilter v-model="dateStart" label="Data Início" />
+                <DateFilter v-model="dateEnd" label="Data Fim" />
+                <ValueFilter v-model="minValue" label="Valor Mínimo (R$)" placeholder="0,00" />
+                <ValueFilter v-model="maxValue" label="Valor Máximo (R$)" placeholder="0,00" />
               </v-row>
             </v-form>
           </v-card-text>
@@ -58,50 +32,44 @@
 
         <!-- Tabela de Transações (v-data-table) -->
         <div class="table-section">
-          <v-data-table
-            dense
-            :headers="headers"
-            :items="transactions"
-            :page.sync="page"
-            :items-per-page.sync="perPage"
-            :server-items-length="totalRecords"
-            :loading="loading"
-            class="elevation-1 statement-table"
-            :items-per-page-options="[1, 10, 20, 50]"
-            show-first-last-page
-            footer-props="{ showCurrentPage: true, showFirstLastPage: true }"
-          >
-            <!-- Slot para formatação da data -->
-            <template #item.date="{ item }">
-              {{ item.created_at
-                ? new Date(item.created_at).toLocaleDateString('pt-BR')
-                : '-' }}
-            </template>
-
-            <!-- Slot para formatação do tipo -->
-            <template #item.type="{ item }">
-              {{ item.transfer_type_text || '-' }}
-            </template>
-
-            <!-- Slot para formatação do valor -->
-            <template #item.value="{ item }">
-              <div class="text-right">
-                {{ item.amount_to_transfer != null
-                  ? item.amount_to_transfer.toFixed(2)
+          <div class="table-wrapper">
+            <v-data-table
+              dense
+              :headers="headers"
+              :items="filteredTransactions"
+              :page.sync="page"
+              :items-per-page.sync="perPage"
+              :server-items-length="totalRecords"
+              :loading="loading"
+              class="elevation-1 statement-table"
+              :items-per-page-options="[1, 10, 20, 50]"
+              show-first-last-page
+              footer-props="{ showCurrentPage: true, showFirstLastPage: true }"
+            >
+              <!-- Slots para formatação -->
+              <template #item.date="{ item }">
+                {{ item.created_at
+                  ? new Date(item.created_at).toLocaleDateString('pt-BR')
                   : '-' }}
-              </div>
-            </template>
-
-            <!-- Slot para formatação da origem -->
-            <template #item.origem="{ item }">
-              {{ item.from_user_bank_account?.bank_name || '-' }}
-            </template>
-
-            <!-- Slot para formatação do destino -->
-            <template #item.destino="{ item }">
-              {{ item.to_bank_account?.bank_name || '-' }}
-            </template>
-          </v-data-table>
+              </template>
+              <template #item.type="{ item }">
+                {{ item.transfer_type_text || '-' }}
+              </template>
+              <template #item.value="{ item }">
+                <div class="text-right">
+                  {{ item.amount_to_transfer != null
+                    ? item.amount_to_transfer.toFixed(2)
+                    : '-' }}
+                </div>
+              </template>
+              <template #item.origem="{ item }">
+                {{ item.from_user_bank_account?.bank_name || '-' }}
+              </template>
+              <template #item.destino="{ item }">
+                {{ item.to_bank_account?.bank_name || '-' }}
+              </template>
+            </v-data-table>
+          </div>
         </div>
       </v-col>
     </v-row>
@@ -112,7 +80,8 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
-import FilterField from '@/components/FilterField.vue';
+import DateFilter from '@/components/filters/DateFilter.vue';
+import ValueFilter from '@/components/filters/ValueFilter.vue';
 import type { DataTableHeader } from 'vuetify';
 
 function useDebouncedWatch(sources: any[], callback: () => void, delay = 400) {
@@ -154,6 +123,19 @@ const headers: DataTableHeader[] = [
 const transactions = computed(() => transactionStore.statement);
 const totalRecords = computed(() => transactionStore.totalRecords);
 
+const filteredTransactions = computed(() => {
+  return transactionStore.statement.filter((transaction) => {
+    const transactionDate = new Date(transaction.created_at).toISOString().split('T')[0];
+    const isWithinDateRange =
+      (!dateStart.value || transactionDate >= dateStart.value) &&
+      (!dateEnd.value || transactionDate <= dateEnd.value);
+    const isAboveMinValue = !minValue.value || transaction.amount_to_transfer >= parseFloat(minValue.value);
+    const isBelowMaxValue = !maxValue.value || transaction.amount_to_transfer <= parseFloat(maxValue.value);
+
+    return isWithinDateRange && isAboveMinValue && isBelowMaxValue;
+  });
+});
+
 // Regras de validação simples
 const rulePositive = (v: string) => {
   if (v === '') return true;
@@ -167,8 +149,8 @@ async function fetchTransactions(customPage?: number) {
   error.value = '';
   try {
     await transactionStore.fetchStatement(authStore.token, {
-      dateStart: dateStart.value || undefined,
-      dateEnd: dateEnd.value || undefined,
+      dateStart: dateStart.value ? new Date(dateStart.value).toISOString().split('T')[0] : undefined,
+      dateEnd: dateEnd.value ? new Date(dateEnd.value).toISOString().split('T')[0] : undefined,
       minValue: minValue.value || undefined,
       maxValue: maxValue.value || undefined,
       page: customPage ?? page.value,
@@ -204,9 +186,15 @@ watch([page, perPage], ([newPage, newPerPage], [oldPage, oldPerPage]) => {
 
 <style scoped>
 /* Ajustes de estilo para colunas mais largas e legíveis */
+.statement-table {
+  width: 100%; /* Garante que a tabela ocupe toda a largura do contêiner */
+  max-width: 100%; /* Remove restrições de largura máxima */
+  margin: 0; /* Remove margens extras */
+}
+
 .statement-table th,
 .statement-table td {
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 2rem; /* Aumenta o espaçamento horizontal */
   word-break: break-word;
 }
 
