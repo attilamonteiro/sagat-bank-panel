@@ -113,6 +113,7 @@ import { ref, onMounted, watch, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth/authStore';
 import { useTransactionStore } from '@/stores/transactionStore';
 import FilterField from '@/components/FilterField.vue';
+import type { DataTableHeader } from 'vuetify';
 
 function useDebouncedWatch(sources: any[], callback: () => void, delay = 400) {
   let timeout: ReturnType<typeof setTimeout>;
@@ -141,12 +142,12 @@ const menuStart = ref(false);
 const menuEnd = ref(false);
 
 // Definição CORRETA dos headers para v-data-table
-const headers = [
-  { title: 'Data',    value: 'date',    width: '20%'  },
-  { title: 'Tipo',    value: 'type',    width: '15%'  },
-  { title: 'Valor',   value: 'value',   width: '15%', align: 'end' },
-  { title: 'Origem',  value: 'origem',  width: '25%'  },
-  { title: 'Destino', value: 'destino', width: '25%'  },
+const headers: DataTableHeader[] = [
+  { title: 'Data', value: 'date', width: '20%' },
+  { title: 'Tipo', value: 'type', width: '15%' },
+  { title: 'Valor', value: 'value', width: '15%', align: 'end' },
+  { title: 'Origem', value: 'origem', width: '25%' },
+  { title: 'Destino', value: 'destino', width: '25%' },
 ];
 
 // Dados calculados
