@@ -1,7 +1,7 @@
 {
   "name": "sagat-bank-panel",
   "private": true,
-  "version": "0.0.0",
+  "vesion": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
