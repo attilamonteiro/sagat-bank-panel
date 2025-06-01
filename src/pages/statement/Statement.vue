@@ -2,7 +2,6 @@
   <v-container class="py-4" fluid>
     <v-row justify="center">
       <v-col cols="12" md="12" lg="10">
-        <!-- Título -->
         <div class="title-section mb-6">
           <v-card elevation="2" rounded="lg">
             <v-card-title>
@@ -11,7 +10,6 @@
           </v-card>
         </div>
 
-        <!-- Card de Filtros -->
         <div class="filters-section mb-4">
           <v-card-text class="pt-3 pb-3">
             <v-form @submit.prevent>
@@ -25,12 +23,10 @@
           </v-card-text>
         </div>
 
-        <!-- Loading Overlay -->
         <v-overlay :value="loading" absolute>
           <v-progress-circular indeterminate color="primary" size="48" width="4" />
         </v-overlay>
 
-        <!-- Tabela de Transações (v-data-table) -->
         <div class="table-section">
           <div class="table-wrapper">
             <v-data-table
@@ -46,7 +42,6 @@
               show-first-last-page
               footer-props="{ showCurrentPage: true, showFirstLastPage: true }"
             >
-              <!-- Slots para formatação -->
               <template #item.date="{ item }">
                 {{ item.created_at
                   ? new Date(item.created_at).toLocaleDateString('pt-BR')
@@ -98,7 +93,6 @@ const transactionStore = useTransactionStore();
 const loading = ref(false);
 const error = ref('');
 
-// Filtros (todos iniciados como string vazia para compatibilidade com store)
 const dateStart = ref<string>('');
 const dateEnd = ref<string>('');
 const minValue = ref<string>('');
@@ -106,11 +100,9 @@ const maxValue = ref<string>('');
 const page = ref<number>(1);
 const perPage = ref<number>(10);
 
-// Controle dos menus de data
 const menuStart = ref(false);
 const menuEnd = ref(false);
 
-// Definição CORRETA dos headers para v-data-table
 const headers: DataTableHeader[] = [
   { title: 'Data', value: 'date', width: '20%' },
   { title: 'Tipo', value: 'type', width: '15%' },
@@ -119,7 +111,6 @@ const headers: DataTableHeader[] = [
   { title: 'Destino', value: 'destino', width: '25%' },
 ];
 
-// Dados calculados
 const transactions = computed(() => transactionStore.statement);
 const totalRecords = computed(() => transactionStore.totalRecords);
 
@@ -136,7 +127,6 @@ const filteredTransactions = computed(() => {
   });
 });
 
-// Regras de validação simples
 const rulePositive = (v: string) => {
   if (v === '') return true;
   const num = parseFloat(v.replace(',', '.'));
@@ -176,7 +166,6 @@ useDebouncedWatch(
   400
 );
 
-// Quando o usuário altera a página ou itens por página, busca novamente
 watch([page, perPage], ([newPage, newPerPage], [oldPage, oldPerPage]) => {
   if (newPage !== oldPage || newPerPage !== oldPerPage) {
     fetchTransactions(newPage);
@@ -185,16 +174,15 @@ watch([page, perPage], ([newPage, newPerPage], [oldPage, oldPerPage]) => {
 </script>
 
 <style scoped>
-/* Ajustes de estilo para colunas mais largas e legíveis */
 .statement-table {
-  width: 100%; /* Garante que a tabela ocupe toda a largura do contêiner */
-  max-width: 100%; /* Remove restrições de largura máxima */
-  margin: 0; /* Remove margens extras */
+  width: 100%; 
+  max-width: 100%;
+  margin: 0; 
 }
 
 .statement-table th,
 .statement-table td {
-  padding: 0.75rem 2rem; /* Aumenta o espaçamento horizontal */
+  padding: 0.75rem 2rem;
   word-break: break-word;
 }
 
@@ -203,12 +191,10 @@ watch([page, perPage], ([newPage, newPerPage], [oldPage, oldPerPage]) => {
   border-bottom: 2px solid #e0e0e0;
 }
 
-/* Hover para linha */
 .statement-table tbody tr:hover td {
   background-color: #f1f3f5;
 }
 
-/* Remove padding extra do container Vuetify, se houver */
 .v-application--wrap {
   padding-bottom: 0 !important;
 }

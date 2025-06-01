@@ -79,7 +79,7 @@ async function logout() {
   font-weight: 500;
 }
 .header-logout-btn {
-  background: #0d6abf;
+  background: black;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -89,6 +89,6 @@ async function logout() {
   transition: background 0.2s;
 }
 .header-logout-btn:hover {
-  background: #09549c;
+  background: #a33a3a;
 }
 </style>

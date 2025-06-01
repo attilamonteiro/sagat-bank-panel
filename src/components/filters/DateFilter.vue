@@ -77,5 +77,4 @@ watch(() => internalValue.value, (newValue) => {
 </script>
 
 <style scoped>
-/* Add any specific styles for the DateFilter component here */
 </style>

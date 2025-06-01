@@ -59,7 +59,6 @@ async function onRegister() {
 </script>
 
 <style scoped>
-/* Estilo semelhante ao login */
 body {
   background-color: #FFFFFF;
   margin: 0;

@@ -70,66 +70,59 @@ function onRegister() {
 </script>
 
 <style scoped>
-/* Ajustando o layout para caber na tela sem rolagem */
 body {
-  background-color: #ffffff; /* Fundo principal branco */
+  background-color: #ffffff; 
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Altura total da tela */
+  height: 100vh;
 }
 
-/* Container do login */
 div {
   margin: auto;
-  max-width: 300px; /* Reduzindo ainda mais a largura máxima */
-  padding: 1rem; /* Reduzindo o padding interno */
+  max-width: 300px; 
+  padding: 1rem; 
   border-radius: 8px;
   box-shadow: 0 2px 8px #0001;
-  background: #ffffff; /* Fundo branco para destacar o conteúdo */
+  background: #ffffff; 
 }
 
-/* Título */
 h2 {
   text-align: center;
-  color: #8b2d2d; /* Vermelho escuro */
-  margin-bottom: 1rem; /* Espaçamento inferior para o título */
+  color: #8b2d2d; 
+  margin-bottom: 1rem; 
 }
 
-/* Botão de login */
 button {
   width: 100%;
-  padding: 8px; /* Reduzindo o padding do botão */
-  background-color: #8b2d2d; /* Vermelho escuro */
-  color: #ffffff; /* Texto branco */
+  padding: 8px; 
+  background-color: #8b2d2d; 
+  color: #ffffff; 
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #a33a3a; /* Tom mais claro de vermelho escuro para hover */
+  background-color: #a33a3a;
 }
 
-/* Texto comum */
 label {
-  color: #333333; /* Preto ou cinza escuro */
+  color: #333333; 
 }
 
-/* Texto de apoio */
 input {
   width: 100%;
-  padding: 6px; /* Reduzindo o padding dos inputs */
-  border: 1px solid #d3d3d3; /* Cinza claro */
+  padding: 6px; 
+  border: 1px solid #d3d3d3; 
   border-radius: 4px;
 }
 
-/* Mensagem de erro */
 .error {
-  color: #8b2d2d; /* Vermelho escuro */
+  color: #8b2d2d;
   margin-top: 1rem;
 }
 </style>

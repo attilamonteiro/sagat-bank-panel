@@ -154,7 +154,7 @@ select {
   border: 1px solid #ccc;
 }
 button {
-  background: #0d6abf;
+  background: #8b2d2d; /* Tom de vermelho da identidade visual */
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -166,6 +166,9 @@ button {
 button:disabled {
   background: #888;
   cursor: not-allowed;
+}
+button:hover {
+  background: #a33a3a; /* Tom mais claro de vermelho */
 }
 .error {
   color: #b71c1c;

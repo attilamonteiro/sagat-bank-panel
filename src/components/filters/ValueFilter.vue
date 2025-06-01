@@ -50,5 +50,4 @@ const rulePositive = (v: string) => {
 </script>
 
 <style scoped>
-/* Add any specific styles for the ValueFilter component here */
 </style>

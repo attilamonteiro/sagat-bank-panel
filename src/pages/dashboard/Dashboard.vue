@@ -114,16 +114,18 @@ type UserBankAccount = {
   margin: 0 auto;
   padding: 1rem;
   font-size: 14px;
+  background-color: #FFFFFF; 
 }
 
 .user-info {
-  background: #fff;
+  background: #FFFFFF; 
   border-radius: 8px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1); 
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  border-left: 4px solid #8B2D2D; 
 }
 
 .info-grid {
@@ -134,15 +136,17 @@ type UserBankAccount = {
 
 .accounts-card,
 .transactions-card {
-  background: #f5f5f5;
+  background: #F9F9F9; 
   border-radius: 6px;
   padding: 0.75rem;
+  border: 1px solid #E0E0E0;
 }
 
 .accounts-card h3,
 .transactions-card h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1rem;
+  color: #8B2D2D;
 }
 
 .accounts-table {
@@ -151,9 +155,13 @@ type UserBankAccount = {
   font-size: 13px;
 }
 
-.accounts-table th,
+.accounts-table th {
+  background-color: #F2D7D7; 
+  color: #8B2D2D;
+}
+
 .accounts-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #DDD;
   padding: 0.25rem;
   text-align: left;
 }
@@ -169,13 +177,14 @@ type UserBankAccount = {
   display: flex;
   justify-content: space-between;
   padding: 0.25rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #EEE;
+  color: #333333;
 }
 
 .loading,
 .empty {
   text-align: center;
-  color: #888;
+  color: #888888;
   font-size: 14px;
 }
 </style>
