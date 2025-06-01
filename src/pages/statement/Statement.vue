@@ -1,16 +1,19 @@
 <template>
-  <v-container class="py-6" fluid>
+  <v-container class="py-4" fluid>
     <v-row justify="center">
-      <v-col cols="12" md="10" lg="8">
-        <!-- Card Principal -->
-        <v-card elevation="2" rounded="lg">
-          <!-- Título -->
-          <v-card-title class="pb-0">
-            <span class="text-h5 text-primary">Extrato Bancário</span>
-          </v-card-title>
+      <v-col cols="12" md="12" lg="10">
+        <!-- Título -->
+        <div class="title-section mb-6">
+          <v-card elevation="2" rounded="lg">
+            <v-card-title>
+              <span class="text-h5 text-primary">Extrato Bancário</span>
+            </v-card-title>
+          </v-card>
+        </div>
 
-          <!-- Card de Filtros -->
-          <v-card-text class="pt-2 pb-0">
+        <!-- Card de Filtros -->
+        <div class="filters-section">
+          <v-card-text class="pt-3 pb-3">
             <v-form @submit.prevent>
               <v-row dense>
                 <!-- Data Início -->
@@ -20,8 +23,8 @@
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
-                    max-width="290px"
-                    min-width="290px"
+                    max-width="250px"
+                    min-width="250px"
                   >
                     <template #activator="{ props }">
                       <v-text-field
@@ -52,8 +55,8 @@
                     :close-on-content-click="false"
                     transition="scale-transition"
                     offset-y
-                    max-width="290px"
-                    min-width="290px"
+                    max-width="250px"
+                    min-width="250px"
                   >
                     <template #activator="{ props }">
                       <v-text-field
@@ -106,69 +109,47 @@
                     clearable
                   />
                 </v-col>
-
-                <!-- Por Página -->
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field
-                    v-model.number="perPage"
-                    label="Por Página"
-                    type="number"
-                    dense
-                    outlined
-                    hide-details
-                    :rules="[rulePerPage]"
-                    placeholder="10"
-                    clearable
-                  />
-                </v-col>
               </v-row>
             </v-form>
           </v-card-text>
+        </div>
 
-          <!-- Loading Overlay -->
-          <v-overlay :value="loading" absolute>
-            <v-progress-circular
-              indeterminate
-              color="primary"
-              size="48"
-              width="4"
-            />
-          </v-overlay>
+        <!-- Loading Overlay -->
+        <v-overlay :value="loading" absolute>
+          <v-progress-circular
+            indeterminate
+            color="primary"
+            size="48"
+            width="4"
+          />
+        </v-overlay>
 
-          <!-- Tabela de Transações -->
-          <v-card-text class="pt-0">
+        <!-- Tabela de Transações -->
+        <div class="table-section">
+          <v-card-text class="pt-3">
             <v-simple-table dense class="statement-table">
-              <!-- Define proporção das colunas -->
               <colgroup>
-                <col style="width: 15%" />
-                <col style="width: 15%" />
-                <col style="width: 15%" />
-                <col style="width: 25%" />
-                <col style="width: 25%" />
-                <col style="width: 15%" />
+                <col style="width: 20%" />
+                <col style="width: 20%" />
+                <col style="width: 20%" />
+                <col style="width: 20%" />
+                <col style="width: 20%" />
               </colgroup>
 
-              <thead>
-                <tr>
-                  <th class="text-left">Data</th>
-                  <th class="text-left">Tipo</th>
-                  <th class="text-left">Valor (R$)</th>
-                  <th class="text-left">Origem</th>
-                  <th class="text-left">Destino</th>
-                  <th class="text-left">Status</th>
-                </tr>
-              </thead>
+                <thead>
+                  <tr>
+                    <th class="text-left">Data</th>
+                    <th class="text-left">Tipo</th>
+                    <th class="text-left">Valor</th>
+                    <th class="text-left">Origem</th>
+                    <th class="text-left">Destino</th>
+                  </tr>
+                </thead>
               <tbody>
                 <tr v-for="tx in transactions" :key="tx.id">
                   <td class="col-data">
                     {{ tx.created_at
-                      ? new Date(tx.created_at).toLocaleString('pt-BR', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })
+                      ? new Date(tx.created_at).toLocaleDateString('pt-BR')
                       : '-' }}
                   </td>
                   <td class="col-tipo">{{ tx.transfer_type_text || '-' }}</td>
@@ -178,37 +159,30 @@
                       : '-' }}
                   </td>
                   <td class="col-origem">
-                    <div v-if="tx.from_user_bank_account">
-                      {{ tx.from_user_bank_account.bank_name }}<br />
-                      {{ tx.from_user_bank_account.account_number }}-
-                      {{ tx.from_user_bank_account.account_digit }}
-                    </div>
-                    <div v-else>-</div>
+                    {{ tx.from_user_bank_account?.bank_name || '-' }}
                   </td>
                   <td class="col-destino">
-                    <div v-if="tx.to_bank_account">
-                      {{ tx.to_bank_account.bank_name }}<br />
-                      {{ tx.to_bank_account.account_number }}-
-                      {{ tx.to_bank_account.account_digit }}
-                    </div>
-                    <div v-else>-</div>
-                  </td>
-                  <td class="col-status">
-                    <v-chip
-                      :color="tx.was_success ? 'green lighten-2' : 'red lighten-2'"
-                      small
-                      text-color="white"
-                    >
-                      {{ tx.was_success ? 'Sucesso' : 'Falha' }}
-                    </v-chip>
+                    {{ tx.to_bank_account?.bank_name || '-' }}
                   </td>
                 </tr>
               </tbody>
             </v-simple-table>
           </v-card-text>
+        </div>
 
-          <!-- Paginação -->
-          <v-card-actions class="justify-center pt-0">
+        <!-- Paginação -->
+        <v-card-actions class="justify-between pt-3">
+          <v-select
+            v-model="perPage"
+            :items="[5, 10, 20, 50]"
+            label="Itens por página"
+            dense
+            outlined
+            hide-details
+            style="max-width: 200px;"
+            @change="fetchTransactions(1)"
+          ></v-select>
+          <div class="pagination-controls">
             <v-btn
               color="primary"
               :disabled="page === 1"
@@ -217,7 +191,7 @@
             >
               ← Anterior
             </v-btn>
-            <span class="mx-4 text-subtitle-2">
+            <span class="mx-3 text-subtitle-2">
               Página {{ currentPage }} de {{ totalPages }}
             </span>
             <v-btn
@@ -228,15 +202,8 @@
             >
               Próxima →
             </v-btn>
-          </v-card-actions>
-
-          <!-- Mensagem de Erro -->
-          <v-card-text v-if="error" class="py-2">
-            <v-alert type="error" dense outlined>
-              {{ error }}
-            </v-alert>
-          </v-card-text>
-        </v-card>
+          </div>
+        </v-card-actions>
       </v-col>
     </v-row>
   </v-container>
@@ -369,12 +336,6 @@ function prevPage() {
   min-width: 180px;
 }
 
-.col-status {
-  /* Status (chip) */
-  min-width: 100px;
-  text-align: center;
-}
-
 /* Hover para linha */
 .statement-table tbody tr:hover td {
   background-color: #f1f3f5;
@@ -383,5 +344,10 @@ function prevPage() {
 /* Remove padding extra do container Vuetify, se houver */
 .v-application--wrap {
   padding-bottom: 0 !important;
+}
+
+/* Ajuste para aumentar a largura da página em 30% */
+.v-container {
+  max-width: 130%;
 }
 </style>
