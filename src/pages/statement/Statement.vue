@@ -17,7 +17,7 @@
             <v-form @submit.prevent>
               <v-row dense>
                 <!-- Data Início -->
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="3" md="3">
                   <v-menu
                     v-model="menuStart"
                     :close-on-content-click="false"
@@ -49,7 +49,7 @@
                 </v-col>
 
                 <!-- Data Fim -->
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="3" md="3">
                   <v-menu
                     v-model="menuEnd"
                     :close-on-content-click="false"
@@ -81,7 +81,7 @@
                 </v-col>
 
                 <!-- Valor Mínimo -->
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="3" md="3">
                   <v-text-field
                     v-model="minValue"
                     label="Valor Mínimo (R$)"
@@ -96,7 +96,7 @@
                 </v-col>
 
                 <!-- Valor Máximo -->
-                <v-col cols="12" sm="6" md="4">
+                <v-col cols="12" sm="3" md="3">
                   <v-text-field
                     v-model="maxValue"
                     label="Valor Máximo (R$)"
@@ -174,7 +174,7 @@
         <v-card-actions class="justify-between pt-3">
           <v-select
             v-model="perPage"
-            :items="[5, 10, 20, 50]"
+            :items="[1, 5, 10, 100]"
             label="Itens por página"
             dense
             outlined
