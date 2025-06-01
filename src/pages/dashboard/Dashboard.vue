@@ -5,7 +5,6 @@
       <div v-if="user">
         <div class="info-grid">
           <div><strong>Nome:</strong> {{ user.user?.name || user.name || '---' }}</div>
-          <div><strong>Saldo:</strong> R$ {{ user.balance?.toFixed(2) || '---' }}</div>
         </div>
 
         <div v-if="myAccounts.length" class="accounts-card">
