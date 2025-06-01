@@ -189,13 +189,28 @@ watch([page, perPage], ([newPage, newPerPage], [oldPage, oldPerPage]) => {
 .statement-table th {
   font-weight: 600;
   border-bottom: 2px solid #e0e0e0;
+  background-color: #F2D7D7;
+  color: #8B2D2D;
 }
 
 .statement-table tbody tr:hover td {
-  background-color: #f1f3f5;
+  background-color: #F9EBEA;
 }
 
 .v-application--wrap {
   padding-bottom: 0 !important;
+}
+
+.text-primary {
+  color: #8B2D2D !important;
+}
+
+.v-card {
+  background-color: #FFFFFF;
+  border-left: 4px solid #8B2D2D;
+}
+
+.v-progress-circular {
+  color: #8B2D2D; 
 }
 </style>
