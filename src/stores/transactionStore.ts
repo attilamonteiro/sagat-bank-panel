@@ -21,7 +21,14 @@ export const useTransactionStore = defineStore('transaction', () => {
           },
         }
       );
-      transactions.value = data.records || data.transactions || [];
+      transactions.value = (data.bank_account_transfers || []).map(
+        (transfer: any) => ({
+          id: transfer.id,
+          date: transfer.created_at,
+          description: transfer.transfer_type_text,
+          amount: transfer.amount_to_transfer,
+        })
+      );
     } catch (e) {
       transactions.value = [];
       throw e;

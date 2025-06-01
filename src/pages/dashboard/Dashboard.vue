@@ -30,20 +30,23 @@
             </tbody>
           </table>
         </div>
-
-        <div class="transactions-card">
-          <h3>Últimas Transações</h3>
-          <ul v-if="lastTransactions.length" class="transactions-list">
-            <li v-for="tx in lastTransactions.slice(0, 2)" :key="tx.id">
-              <span>{{ formatDate(tx.date) }}</span>
-              <span>{{ tx.description || tx.type }}</span>
-              <span>R$ {{ tx.amount.toFixed(2) }}</span>
-            </li>
-          </ul>
-          <div v-else class="empty">Sem transações</div>
-        </div>
       </div>
-      <div v-else class="loading">Carregando...</div>
+
+      <div class="transactions-card">
+        <h3>Últimas Transações</h3>
+        <ul v-if="lastTransactions.length" class="transactions-list">
+          <li v-for="tx in lastTransactions.slice(0, 3)" :key="tx.id">
+            <span>{{ formatDate(tx.date) }}</span>
+            <span>{{ tx.description || tx.type }}</span>
+            <span>R$ {{ tx.amount.toFixed(2) }}</span>
+          </li>
+        </ul>
+        <div v-else class="empty">Sem transações</div>
+      </div>
+
+      <v-overlay :value="!user" absolute>
+        <v-progress-circular indeterminate color="primary" size="48" width="4" />
+      </v-overlay>
     </section>
   </div>
 </template>
