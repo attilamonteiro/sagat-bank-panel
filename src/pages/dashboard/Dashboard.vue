@@ -1,6 +1,9 @@
 <template>
   <div class="dashboard">
-    <section class="user-info">
+    <v-overlay :value="isLoading" absolute>
+      <v-progress-circular color="red" indeterminate size="48" width="4" />
+    </v-overlay>
+    <section v-if="!isLoading" class="user-info">
       <h2>Painel</h2>
       <div v-if="user">
         <div class="info-grid">
@@ -34,40 +37,27 @@
 
       <div class="transactions-card">
         <h3>Últimas Transações</h3>
-        <ul v-if="lastTransactions.length" class="transactions-list">
+        <ul v-if="lastTransactions.length > 0" class="transactions-list">
           <li v-for="tx in lastTransactions.slice(0, 3)" :key="tx.id">
             <span>{{ formatDate(tx.date) }}</span>
             <span>{{ tx.description || tx.type }}</span>
             <span>R$ {{ tx.amount.toFixed(2) }}</span>
           </li>
         </ul>
-        <div v-else class="empty">Sem transações</div>
+        <div v-if="lastTransactions.length == 0" class="empty">Sem transações</div>
       </div>
-
-      <v-overlay :value="!user" absolute>
-        <v-progress-circular indeterminate color="primary" size="48" width="4" />
-      </v-overlay>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { useAuthStore } from '../../stores/auth/authStore';
 import { useUserStore } from '../../stores/userStore';
 import { useTransactionStore } from '../../stores/transactionStore';
 import { useBankAccountStore } from '../../stores/bankAccountStore';
 
-type UserBankAccount = {
-  id: number;
-  bank_code?: string;
-  agency_number?: string;
-  agency_digit?: string;
-  account_number?: string;
-  account_digit?: string;
-  account_type?: string;
-  amount?: number;
-};
+const isLoading = ref(true);
 
 const authStore = useAuthStore();
 const userStore = useUserStore();
@@ -95,12 +85,27 @@ function formatDate(dateStr: string) {
 }
 
 onMounted(async () => {
-  if (authStore.token) {
-    await userStore.fetchUserInfo(authStore.token);
-    await transactionStore.fetchLastTransactions(authStore.token);
-    await bankAccountStore.fetchMyAccounts(authStore.token);
+  try {
+    if (authStore.token) {
+      await userStore.fetchUserInfo(authStore.token);
+      await transactionStore.fetchLastTransactions(authStore.token);
+      await bankAccountStore.fetchMyAccounts(authStore.token);
+    }
+  } finally {
+    isLoading.value = false;
   }
 });
+
+type UserBankAccount = {
+  id: number;
+  bank_code?: string;
+  agency_number?: string;
+  agency_digit?: string;
+  account_number?: string;
+  account_digit?: string;
+  account_type?: string;
+  amount?: number;
+};
 </script>
 
 <style scoped>
