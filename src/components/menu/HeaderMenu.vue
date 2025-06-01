@@ -24,7 +24,6 @@ const userStore = useUserStore();
 const authStore = useAuthStore();
 
 const userName = computed(() => {
-  // Garante compatibilidade com resposta { user: { name: ... } }
   if (userStore.user && userStore.user.user && userStore.user.user.name) {
     return userStore.user.user.name;
   }

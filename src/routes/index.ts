@@ -31,7 +31,7 @@ export default function setupRouter() {
       (to.path === '/login' || to.path === '/register') &&
       authStore.isAuthenticated
     ) {
-      next('/painel/home');
+      next('/painel/dashboard');
     } else {
       next();
     }

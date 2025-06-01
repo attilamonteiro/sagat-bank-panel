@@ -56,6 +56,7 @@ import { useAuthStore } from '../../stores/auth/authStore';
 import { useUserStore } from '../../stores/userStore';
 import { useTransactionStore } from '../../stores/transactionStore';
 import { useBankAccountStore } from '../../stores/bankAccountStore';
+import type { UserBankAccount } from '@/types/UserBankAccount';
 
 const isLoading = ref(true);
 
@@ -95,17 +96,6 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
-
-type UserBankAccount = {
-  id: number;
-  bank_code?: string;
-  agency_number?: string;
-  agency_digit?: string;
-  account_number?: string;
-  account_digit?: string;
-  account_type?: string;
-  amount?: number;
-};
 </script>
 
 <style scoped>
