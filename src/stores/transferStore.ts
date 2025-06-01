@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const useTransferStore = defineStore('transfer', () => {
   const transferResult = ref<any | null>(null);
   const transferError = ref<string | null>(null);
@@ -12,7 +14,7 @@ export const useTransferStore = defineStore('transfer', () => {
     transferError.value = null;
     try {
       const { data } = await axios.post(
-        import.meta.env.VITE_API_URL + '/users/bank_account_transfers',
+        `${API_URL}/users/bank_account_transfers`,
         transferData,
         {
           headers: {

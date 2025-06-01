@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const useBankAccountStore = defineStore('bankAccount', () => {
   const accounts = ref<any[]>([]);
   const myAccounts = ref<any[]>([]);
@@ -9,7 +11,7 @@ export const useBankAccountStore = defineStore('bankAccount', () => {
   async function fetchAccounts(token: string) {
     try {
       const { data } = await axios.get(
-        import.meta.env.VITE_API_URL + '/users/bank_accounts',
+        `${API_URL}/users/bank_accounts`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -27,7 +29,7 @@ export const useBankAccountStore = defineStore('bankAccount', () => {
   async function fetchMyAccounts(token: string) {
     try {
       const { data } = await axios.get(
-        import.meta.env.VITE_API_URL + '/users/bank_accounts/my',
+        `${API_URL}/users/bank_accounts/my`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const useTransactionStore = defineStore('transaction', () => {
   const transactions = ref<any[]>([]);
   const statement = ref<any[]>([]);
@@ -12,8 +14,7 @@ export const useTransactionStore = defineStore('transaction', () => {
   async function fetchLastTransactions(token: string) {
     try {
       const { data } = await axios.get(
-        import.meta.env.VITE_API_URL +
-          '/users/bank_account_transfers/statements?per_page=3&page=1',
+        `${API_URL}/users/bank_account_transfers/statements?per_page=3&page=1`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -58,9 +59,7 @@ export const useTransactionStore = defineStore('transaction', () => {
       if (filters.minValue) params.push(`min_value=${filters.minValue}`);
       if (filters.maxValue) params.push(`max_value=${filters.maxValue}`);
       const query = params.join('&');
-      const url = `${
-        import.meta.env.VITE_API_URL
-      }/users/bank_account_transfers/statements?${query}`;
+      const url = `${API_URL}/users/bank_account_transfers/statements?${query}`;
       const { data } = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
