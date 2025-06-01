@@ -18,8 +18,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/auth/authStore';
 
 const userStore = useUserStore();
+const authStore = useAuthStore();
+
 const userName = computed(() => {
   // Garante compatibilidade com resposta { user: { name: ... } }
   if (userStore.user && userStore.user.user && userStore.user.user.name) {
@@ -31,7 +34,8 @@ const userName = computed(() => {
   return 'Usuário';
 });
 
-function logout() {
+async function logout() {
+  await authStore.logout();
   window.location.href = '/login';
 }
 </script>

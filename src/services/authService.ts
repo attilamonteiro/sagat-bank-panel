@@ -9,11 +9,7 @@ export async function apiLogin(email: string, password: string) {
   return data;
 }
 
-export async function apiRegister(
-  name: string,
-  email: string,
-  password: string
-) {
+export async function apiRegister(name: string, email: string, password: string) {
   const { data } = await axios.post(`${API_URL}/auth/sign_up`, {
     user: { name, email, password },
   });
@@ -24,13 +20,8 @@ export async function apiGetUserInfo(token: string) {
   const { data } = await axios.get(`${API_URL}/users/infos`, {
     headers: {
       Authorization: `Bearer ${token}`,
-      Accept: 'application/json', // Garante resposta JSON
+      Accept: 'application/json',
     },
   });
   return data;
-}
-
-export function apiLogout() {
-  // Se a API tiver endpoint de logout, implemente aqui. Caso contrário, apenas limpe o estado na store.
-  return Promise.resolve();
 }
