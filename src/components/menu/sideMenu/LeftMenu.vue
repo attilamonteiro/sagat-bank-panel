@@ -49,8 +49,8 @@ function isActive(path: string) {
 <style scoped>
 .sidebar-compact {
   width: 64px;
-  background: #222;
-  color: #fff;
+  background: #8B2D2D; /* Preto ou cinza escuro da identidade visual */
+  color: #FFFFFF; /* Texto branco */
   padding: 1rem 0.5rem 1rem 0.5rem;
   display: flex;
   flex-direction: column;
@@ -86,7 +86,10 @@ function isActive(path: string) {
 }
 .sidebar nav li.active,
 .sidebar nav li:hover {
-  background: #444;
+  background: #A33A3A;
+}
+.sidebar nav li:hover {
+  background: #A33A3A; /* Tom mais claro de vermelho escuro */
 }
 
 .main-content {

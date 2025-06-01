@@ -38,7 +38,7 @@ function logout() {
 
 <style scoped>
 .header-menu {
-  background: #222;
+  background: #8b2d2d; 
   color: #fff;
   width: 100%;
   box-shadow: 0 2px 8px #0001;
